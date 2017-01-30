@@ -1,0 +1,11 @@
+	.scheduler-page {margin:.75em;padding:.75em;font-size:1em;font-family:helvetica,arial,sans-serif;color:#666;}
+	.scheduler-page table,form {border:2px dotted #eee;padding:.5em;}
+	.scheduler-page form,input,p {font-size:1em;margin:.5em;font-family:helvetica,arial,sans-serif;}
+	.scheduler-page h1 {margin:.5em;padding.5em;}
+	.scheduler-page table {min-width:400px;width:80%}
+	.scheduler-page table td {padding:.25em;}
+	.scheduler-page table td:hover {background:#f2f2f2}
+	.scheduler-page td.ctr {text-align:center;font-size:11px}
+	.scheduler-page td.rgt {text-align:right;font-size:11px}
+	.scheduler-page td.gray {background:#eee;}
+	.scheduler-page td.olv {background:#efd;}
