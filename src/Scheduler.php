@@ -1,326 +1,122 @@
 <?php
 
-namespace Schedule;
+namespace Schedule; 
 
+use Schedule\SchedulerGenerator;
 use \DateTime;
-use \DateInterval;
 use \DatePeriod;
-use Schedule\IScheduler;
+use \DateInterval;
+use \Exception;
 
-/**
- * Scheduling time for meetings at major events.
- *
- *
- * @author  Andrey Selikov <selffmail@gmail.com>
- * @since   November 10, 2016
- * @link    https://github.com/selff/Scheduler
- * @version 1.0.1
- */
 
-class Scheduler implements IScheduler
+
+class Scheduler 
 {
-    /**
-     * Start meeting at DateTime
-     * @var DateTime
-     */	
-	private $begin;
-
-    /**
-     * End meeting at DateTime
-     * @var DateTime
-     */	
-	private $end;
-
-    /**
-     * DateTime periods of breaks, with coma separate
-     * @var array(DataTime $start,DataTime $end)
-     */	
-	private $breaks;
 	
-	/**
-     * DateInterval of slot
-     * @var DateInterval
-     */
-	private $interval;
+
+	public $uploaddir = '/tmp/';
+
+	public $filename = '';
 	
-	/**
-     * DatePeriod (begin,interval,end)
-     * @var DatePeriod
-     */
-	private $daterange;
-	
-	/**
-     * Find in input data initial preset times for meeting
-     * @var boolean
-     */
-	private $findTimeCell; 
+	public $scheduler_data = []; 
 
-	/**
-     * Some options: initial_preset, initial_format 
-     * @var array
-     */
-	private $settings;
+	public function __construct(){
 
-	/**
-     * Result columns of output table 
-     * @var array
-     */
-	private $columns = [];
+		$this->SchedulerGenerator = new SchedulerGenerator();
 
-	/**
-     * Result rows of output table 
-     * @var array
-     */
-	private $rows = [];
-
-	/**
-     * Prepare output table 
-     * @var array
-     */
-	private $schedule = [];
+	}
 
     /**
-     * Init settings
+     * Validate post user data
      *
-     * @param array  $options
-	 */
-	public function initSettings($options){
+     * @param array $post
+     * @return array $data
+	 */	
+	private function validatePost($post){
 
-		$mydate = date("Y-m-d"); // TODO make meeting for more one day
-		
+		$data = [];
+		if (isset($post['slot']) && preg_match("~[0-9]+~",$post['slot'])) $data['slot'] = $post['slot'];
+		else throw new \Exception('Input field "Slot duration" is wrong');
+		if (isset($post['start']) && preg_match("~\d{2}:\d{2}+~",$post['start'])) $data['start'] = $post['start'];
+		else throw new \Exception('Input field "Event start time" is wrong');
+		if (isset($post['end']) && preg_match("~\d{2}:\d{2}+~",$post['end'])) $data['end'] = $post['end'];
+		else throw new \Exception('Input field "End time" is wrong');
+		if (isset($post['breaks']) && preg_match("~^(\d{2}:\d{2}-\d{2}:\d{2},?\s?)+$~",$post['breaks'])) $data['breaks'] = $post['breaks'];
+		else throw new \Exception('Input field "Possible pauses" is wrong');	
+			
+		return $data;
+	}
+
+    /**
+     * Init settings before generate schedule
+     *
+     * @param array $options
+     * @return void
+	 */	
+	private function initSettings($options){
+	
 		// Is input data consist initial preset times for meeting?
-		$this->settings['initial_preset'] = true;
-		
-		$this->settings['initial_format'] = 'H:i:s';
+		$this->SchedulerGenerator->settings['initial_preset'] = true;
+		$this->SchedulerGenerator->settings['find_initial_time'] = false;
+		$this->SchedulerGenerator->settings['initial_format'] = 'H:i:s';
 
 		$breaks = explode(",",$options['breaks']);
 		foreach($breaks as $break){
 			$b = trim($break);
 			if (preg_match("~^([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2})$~",$b,$m)) {
-				$this->breaks[] = array(
-					'start' => new DateTime($mydate.' '.$m[1].':'.$m[2].':00'),
-					'end' => new DateTime($mydate.' '.$m[3].':'.$m[4].':00'),
+				$this->SchedulerGenerator->breaks[] = array(
+					'start' => new DateTime(date("Y-m-d").' '.$m[1].':'.$m[2].':00'),
+					'end' => new DateTime(date("Y-m-d").' '.$m[3].':'.$m[4].':00'),
 				);
 			}
 		}
-
-		$this->schedule = array();
-		$this->findInitialTimeCell = false;
-		$this->begin = new DateTime($mydate.' '.$options['start'].':00');
-		$this->end = new DateTime($mydate.' '.$options['end'].':00');
-		$this->interval = new DateInterval('PT'.$options['slot'].'M');
-		$this->daterange = new DatePeriod($this->begin, $this->interval ,$this->end);
+		
+		$this->SchedulerGenerator->daterange = new DatePeriod(
+			new DateTime(date("Y-m-d").' '.$options['start'].':00'), 
+			new DateInterval('PT'.$options['slot'].'M'),
+			new DateTime(date("Y-m-d").' '.$options['end'].':00')
+		);		
 	}
 
-    /**
-     * Load input data as dummy table and initialize $columns and $rows for output
-     *
-     * @param array  $rows
-	 */
-	public function loadData($rows){
 
-		foreach ($rows as $i=>$row) {
-			// по столбцам
-			foreach($row as $k=>$v) {
-				// первая строка содержит названия компаний
-				if (0 == $i) {
-					if ($k>2) $this->columns[($k-3)]['name'] = $v;
-				// вторая строка содержит кол-во персонала компаний
-				} elseif (1 == $i) {
-					if ($k>2) $this->columns[($k-3)]['pers'] = $v ? (int)$v : 1;
-				// начиная с третьей строки 
-				} else {
-					switch ($k) {
-						case 0:
-							$this->rows[($i-1)]['name'] = $v; 
-							break;
-						case 1: 
-							$this->rows[($i-1)]['type'] = $v; 
-							break;
-						case 2:
-							$this->rows[($i-1)]['face'] = $v; 
-							break;
-						default:
-							$this->rows[($i-1)]['intersection'][($k-3)] = $v;	
-							break;
+    /**
+     * Load input user data , and init $this->scheduler_data[]
+     *
+     * @param void
+     * @return void
+	 */	
+	public function initFromPost(){
+
+		$csv = array();
+		if (isset($_POST['submit'])) {
+			
+			$options = $this->validatePost($_POST);
+			$this->initSettings($options);
+
+			if (isset($_FILES["userfile"])) {
+
+				//file upload 
+				$tmp_name = $_FILES["userfile"]["tmp_name"];
+				$filename = basename($_FILES["userfile"]["name"]);
+				move_uploaded_file($tmp_name, $this->uploaddir.$filename);
+				if ($_FILES["userfile"]["error"] == UPLOAD_ERR_OK) {
+					$this->filename = $filename;
+					// read file
+					$lines = file($this->uploaddir.$filename, FILE_IGNORE_NEW_LINES);
+					foreach ($lines as $key => $value) { 
+						$csv[$key] = str_getcsv($value); 
 					}
+				} else {
+					throw new \Exception('File not upload :(');
 				}
+			} else {
+				throw new \Exception('Where is a file?');
 			}
 		}
+			
+		$this->scheduler_data = $this->SchedulerGenerator->makeSchedule($csv);
+
 	}
-
-    /**
-     * Init time slots in output shedule table
-     *
-     * @param void
-	 */
-	private function initTime(){
-    	$j=0;
-    	foreach($this->daterange as $i=>$date){
-    			
-    		$temp = array();
-	    	foreach ($this->breaks as $break) {
-	    		if ($date >= $break['start'] && $date < $break['end']) {
-	    			$temp[] = $date->format($this->settings['initial_format']);
-	    		}
-			}
-			if (!in_array($date->format($this->settings['initial_format']),$temp)) {
-				
-				$this->schedule[$j]['time'] = $date->format($this->settings['initial_format']);
-		    	$this->schedule[$j]['periods'] = array();	
-		    	$j++;
-		    }
-				
-		}
-
-		if ($this->settings['initial_preset']) {
-	    	foreach($this->daterange as $i=>$date){
-			    foreach($this->rows as $j=>$intersection) {
-			    	foreach($intersection['intersection'] as $k=>$value) {
-			    		if ($value == $date->format($this->settings['initial_format'])) {
-			    			$this->schedule[$i]['periods'][] = array('columnValue' => $k,'rowValue' => $j);
-			    			$this->findInitialTimeCell = true;
-						}
-			    	}
-			    }
-			}
-		}
-	}
-    
-    /**
-     * Fill shedule table
-     *
-     * @param void
-	 */	
-	private function fillSlots(){
-
-    	foreach($this->rows as $user=>$intersection) {
-		   	// найдем период в котором указан маркер
-		    foreach ($intersection['intersection'] as $column=>$marker) { 
-		    	$marker = trim($marker);
-
-		    	// начнем заполнять все ячейки которые помечены маркером
-		    	if (strlen($marker)<3 && ($marker)) {
-
-			    	$notsaved = true; 
-			    	$startPeriod = $currentPeriod = $pers = 0;
-			    	$prohod = 0;
-			    	$koef = $this->columns[$column]['pers'];
-
-		    		for($z=0;$z<$koef;$z++){
-
-		    		}
-
-			    	$i=0;
-
-			    	do {
-
-			    		$interupt = false;
-						
-			    		$periodBusyComp = false; $periodBusyUser = false; 
-			    		// проверим может этот интервал уже использован
-			    		if (isset($this->schedule[$currentPeriod])) {
-							if (count($this->schedule[$currentPeriod]['periods'])) {
-			   					foreach($this->schedule[$currentPeriod]['periods'] as $k=>$period) {
-			   						// в данный период пользователь уже использован
-			   						if ( $period['rowValue'] == $user ) { $periodBusyUser = true; }
-			   						// в данный период слот компании использован
-			   						if ( $period['columnValue'] == $column 
-			   							&& ($prohod < $this->countPersBusyForPeriod($currentPeriod,$column) ) )  { 
-			   								$periodBusyComp = true; 
-			   						}
-			   					}
-			   				}
-			    		}
-			    		if (!$periodBusyUser && !$periodBusyComp )  {
-			    			$this->schedule[$currentPeriod]['periods'][] = array(
-			   					'columnValue' => $column,'rowValue' => $user
-			   				);
-			   				$notsaved = false;
-			    		}
-			    		
-			    		if ( ( $i == (  count($this->schedule)*$koef - 1) ) && $notsaved ) {
-			    			//Not found slot for user={$user}, column={$column}
-			    			$interupt = true;
-			    		}
-
-			    		$i++; $currentPeriod++;
-			    		
-			    		if ($currentPeriod == count($this->schedule)) {
-			    			$currentPeriod = 0;
-			    			$prohod++;
-			    			if ($this->countPersBusyForPeriod($currentPeriod,$column) > $pers) $pers++;
-			    		}
-
-			    	} while ($notsaved && !$interupt);
-
-			    }
-			}
-		}
-   		
-    }
-
-    /**
-     * Count how persons busy for period in company (input table have persons limit)
-     *
-     * @param int $currentPeriod
-     * @param int $column
-	 */		
-	private function countPersBusyForPeriod($currentPeriod, $column) {
-    	$counter = 0;
-    	$periods = $this->schedule[$currentPeriod];
-    	foreach($periods['periods'] as $period) {
-	    	if ($period['columnValue'] == $column) {
-	    		$counter++;
-	    	}
-    	}
-    	return $counter;
-    }
-
-    /**
-     * Fill shedule table
-     *
-     * @param array $data
-	 */	
-    public function scheduleTable(){
-    	$data = array();
-    	$row = array('Company','Type','User');
-    	foreach($this->columns as $c) {
-    		$row[] = $c['name'];
-    	}
-    	$data[] = $row;
-    	$row = array('','','');
-    	foreach($this->columns as $c) {
-    		$row[] = $c['pers'];
-    	}
-    	$data[] = $row;
-    	foreach($this->rows as $compkey=>$company) {
-    		$row = array();
-    		$row[] = $company['name'];
-    		$row[] = $company['type'];
-    		$row[] = $company['face'];
-    		foreach($this->columns as $columnkey=>$column) {
-    			$marker = '';
-    			foreach($this->schedule as $id=>$shedule) {
-    				foreach ($shedule['periods'] as $period) {
-    					if ( ($period['columnValue'] == $columnkey) && ($period['rowValue'] == $compkey) ) {
-    						$marker = $shedule['time'];
-    					} 
-    				}
-    			}
-    			if ($marker == ''){
-	    			foreach($company['intersection'] as $id=>$m) {
-	    				if ( ($id == $columnkey) && (strlen(trim($m))>0) ) {
-	    					$marker = 'X';
-	    				}
-	    			}
-	    		}
-    			$row[] = $marker;
-    		}
-    		$data[] = $row;
-    	}
-    	return $data;
-    }
 
     /**
      * Write data to csv file
@@ -328,15 +124,15 @@ class Scheduler implements IScheduler
      * @param array $data
      * @param string $filename
 	 */	
-	private function outputCSV($data,$filename) {
+	private function outputCSV() {
 		
         header("Content-type: text/csv");
-    	header("Content-Disposition: attachment; filename={$filename}");
+    	header("Content-Disposition: attachment; filename={$this->filename}");
     	header("Pragma: no-cache");
     	header("Expires: 0");
 
         $outputBuffer = fopen("php://output", 'w');
-        foreach($data as $val) {
+        foreach($this->scheduler_data as $val) {
             fputcsv($outputBuffer, $val);
         }
         fclose($outputBuffer);
@@ -348,9 +144,10 @@ class Scheduler implements IScheduler
      * @param array $data
      * @return string $output
 	 */	
-	private function outputTable($data) {
-		$output = "<table>";
-		foreach ($data as $row) {
+	public function outputTable() {
+		$output = "<p>Generated schedule table:</p>";
+		$output .= "<table class=\"table\">";
+		foreach ($this->scheduler_data as $row) {
 			$output .= "<tr>";
 				foreach ($row as $column) {
 					$output .= "<td>{$column}</td>";
@@ -361,37 +158,4 @@ class Scheduler implements IScheduler
 		return $output;
     }
 
-    /**
-     * Generate shedule data
-     *
-     * @param void
-	 */	
-	public function makeSchedule(){
-
-		$this->initTime();
-		$this->fillSlots();
-
-	}
-
-    /**
-     * Output result table to csv file
-     *
-     * @param string $filename
-	 */	
-	public function outputScheduleCSV($filename){
-
-		$this->outputCSV($this->scheduleTable(),$filename);
-
-	}
-
-    /**
-     * Output result table to screen
-     *
-     * @return string $data
-	 */	
-	public function outputSchedule(){
-
-		return $this->outputTable($this->scheduleTable());
-
-	}
 }

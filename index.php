@@ -1,49 +1,45 @@
 <?php
 
-require_once('./src/IScheduler.php');
+require_once('./src/SchedulerGenerator.php');
 require_once('./src/Scheduler.php');
 
-$uploaddir = '/tmp/';
-$outputTable = '';
+use Schedule\Scheduler;
+use Schedule\SchedulerGenerator;
 
-use Schedule\Scheduler as Scheduler;
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    	throw new Exception($errstr, $errno);
+});
 
-if (isset($_POST['submit'])) {
+$action = isset($_GET['action'])?$_GET['action']:'';
+
+switch ($action) {
 	
-	// init Sheduler
-	$Scheduler = new Scheduler();
+	case '/run':
+		
+		try {
 
-	// settings init from user input
-	// TODO validate _POST
-	$Scheduler->initSettings($_POST);
+			$Scheduler = new Scheduler();
+			$Scheduler->initFromPost();
+			$output = $Scheduler->outputTable();
+
+		} catch (Exception $e) {
+
+		    $output = 
+		    	"<div class=\"bs-callout bs-callout-danger\">".
+		    	'<h4>O-o-o shit! This is error: '.  $e->getMessage(). "</h4>\n".
+		    	"</div>";
+		} 
+
+		include_once('public/output_table.php');
+
+		break;
 	
-	if (isset($_FILES["userfile"])) {
-
-		//file upload 
-		$tmp_name = $_FILES["userfile"]["tmp_name"];
-		$filename = basename($_FILES["userfile"]["name"]);
-		move_uploaded_file($tmp_name, $uploaddir.$filename);
-		if ($_FILES["userfile"]["error"] == UPLOAD_ERR_OK) {
-			
-			// read file
-			$csv = array();
-			$lines = file($uploaddir.$filename, FILE_IGNORE_NEW_LINES);
-			foreach ($lines as $key => $value) { $csv[$key] = str_getcsv($value); }
-
-			// load input data from csv file
-			$Scheduler->loadData($csv);
-
-			// generate Schedule
-			$Scheduler->makeSchedule();
-			
-			// output data 
-			$outputTable = $Scheduler->outputSchedule();
-			//$Scheduler->outputScheduleCSV($filename);
-			include_once("./public/output_table.php");
-		}
-
-	}	
-} else {
-	print file_get_contents("./public/wellcome.html");
+	default:
+		
+		print file_get_contents("./public/wellcome.html");
+		
+		break;
 }
+	
+
 
