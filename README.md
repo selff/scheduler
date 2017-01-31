@@ -1,8 +1,9 @@
-# scheduler
+# Scheduler
 Scheduling time for meetings at major events.
 
 This program was created to organize the schedule short meetings between a group of suppliers and a group of consumers of the goods or services.
-For convenience, the original data is downloaded as a CSV file table and discharged in the form of a CSV file table but already filled schedule.
+For convenience, the original data is loaded as a CSV file.
+And output in html-table or discharged as a CSV file, but with a filled schedule.
 
 The first and second rows in the table are services. The first line contains the name of the company, and the second line indicates the number of persons participating in the meeting of the company.
 The first three columns in the table are also services. 
@@ -14,4 +15,4 @@ Event Start Time HH:MM
 End Time events HH:MM
 Possible pauses separated by commas
 
-See example input table in file example.csv
+See example init table in file example.csv
