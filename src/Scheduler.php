@@ -12,11 +12,11 @@ class Scheduler
 {
 	
 
-	public $uploaddir = '/tmp/';
+	private $uploaddir = '/tmp/';
 
-	public $filename = '';
+	private $filename = '';
 
-	public $scheduler_data = []; 
+	private $scheduler_data = []; 
 
 	public function __construct(){
 
