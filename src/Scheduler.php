@@ -4,13 +4,16 @@ namespace Schedule;
 
 use Schedule\SchedulerGenerator;
 use Schedule\SchedulerException;
+use Schedule\ISchedulerGenerator;
 use \DateTime;
 use \DatePeriod;
 use \DateInterval;
 
+
 class Scheduler 
 {
 	
+	public $SchedulerGenerator = null;
 
 	private $uploaddir = '/tmp/';
 
@@ -18,9 +21,9 @@ class Scheduler
 
 	private $scheduler_data = []; 
 
-	public function __construct(){
+	public function __construct(ISchedulerGenerator $SchedulerGenerator){
 
-		$this->SchedulerGenerator = new SchedulerGenerator();
+			$this->SchedulerGenerator = $SchedulerGenerator;
 
 	}
 

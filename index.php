@@ -20,7 +20,7 @@ switch ($action) {
 		
 		try {
 
-			$Scheduler = new Scheduler();
+			$Scheduler = new Scheduler(new SchedulerGenerator());
 			$Scheduler->initFromPost();
 			$output = $Scheduler->outputTable();
 

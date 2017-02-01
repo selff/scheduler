@@ -6,6 +6,7 @@ use \DateTime;
 use \DateInterval;
 use \DatePeriod;
 use \Exception;
+use Schedule\ISchedulerGenerator;
 
 /**
  * Scheduling time for meetings at major events.
@@ -17,7 +18,7 @@ use \Exception;
  * @version 1.0.1
  */
 
-class SchedulerGenerator
+class SchedulerGenerator implements ISchedulerGenerator
 {
 
     /**
