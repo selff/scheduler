@@ -1,8 +1,8 @@
 <?php
-
-require_once('./src/SchedulerGenerator.php');
-require_once('./src/SchedulerException.php');
-require_once('./src/Scheduler.php');
+require './vendor/autoload.php';
+//require_once('./src/SchedulerGenerator.php');
+//require_once('./src/SchedulerException.php');
+//require_once('./src/Scheduler.php');
 
 use Schedule\Scheduler;
 use Schedule\SchedulerGenerator;
