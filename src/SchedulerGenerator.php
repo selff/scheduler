@@ -109,6 +109,7 @@ class SchedulerGenerator
 				}
 			}
 		}
+		if (empty($this->rows) || empty($this->columns)) throw new SchedulerException('Input data does not contain the required data');
 	}
 
     /**
@@ -189,7 +190,9 @@ class SchedulerGenerator
 							if (count($this->schedule[$currentPeriod]['periods'])) {
 			   					foreach($this->schedule[$currentPeriod]['periods'] as $k=>$period) {
 			   						// в данный период пользователь уже использован
-			   						if ( $period['rowValue'] == $user ) { $periodBusyUser = true; }
+			   						if ( $period['rowValue'] == $user ) { 
+			   							$periodBusyUser = true; 
+			   						}
 			   						// в данный период слот компании использован
 			   						if ( $period['columnValue'] == $column 
 			   							&& ($prohod < $this->countPersBusyForPeriod($currentPeriod,$column) ) )  { 
@@ -224,6 +227,7 @@ class SchedulerGenerator
 			}
 		}
    		
+   		if (empty($this->schedule)) throw new SchedulerException('Failed to schedule the data you entered');
     }
 
     /**
