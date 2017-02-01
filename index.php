@@ -32,13 +32,13 @@ switch ($action) {
 		    	"</div>";
 		} 
 
-		include_once('public/output_table.php');
+		include_once('./templates/output_table.php');
 
 		break;
 	
 	default:
 		
-		print file_get_contents("./public/wellcome.html");
+		print file_get_contents("./templates/wellcome.html");
 		
 		break;
 }

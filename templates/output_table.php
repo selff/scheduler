@@ -3,7 +3,7 @@
 <head>
 	<title>Scheduler</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" href="./public/style.css">
+	<link rel="stylesheet" href="./files/style.css">
 </head>
 <body class="scheduler-page">
 	<div class="container">

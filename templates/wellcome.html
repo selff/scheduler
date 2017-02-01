@@ -3,7 +3,7 @@
 <head>
 	<title>Scheduler</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" href="./public/style.css">
+	<link rel="stylesheet" href="./files/style.css">
 </head>
 <body class="scheduler-page">
 	<div class="container">
@@ -16,7 +16,7 @@
 	  		<div class="col-md-6">	
 				<p>The first and second rows in the table are services. The first line contains the name of the company, and the second line indicates the number of persons participating in the meeting of the company. The first three columns in the table are also services.<br>
 				At the intersection of the row and column markers indicate if the counterparties must meet, and if you want to ask yourself the exact time they enter the marker instead of the exact time of the meeting.</p>
-				<form enctype="multipart/form-data" method="POST" action="/run">
+				<form enctype="multipart/form-data" method="POST" action="./run">
 				<div class="form-group">
 					<label>Input file with dummy table</label>
 					<input name="userfile" class="form-control" type="file" />
