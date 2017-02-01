@@ -1,13 +1,15 @@
 <?php
 
 require_once('./src/SchedulerGenerator.php');
+require_once('./src/SchedulerException.php');
 require_once('./src/Scheduler.php');
 
 use Schedule\Scheduler;
 use Schedule\SchedulerGenerator;
+use Schedule\SchedulerException;
 
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
-    	throw new Exception($errstr, $errno);
+    	throw new SchedulerException($errstr, $errno);
 });
 
 $action = isset($_GET['action'])?$_GET['action']:'';

@@ -3,12 +3,10 @@
 namespace Schedule; 
 
 use Schedule\SchedulerGenerator;
+use Schedule\SchedulerException;
 use \DateTime;
 use \DatePeriod;
 use \DateInterval;
-use \Exception;
-
-
 
 class Scheduler 
 {
@@ -17,7 +15,7 @@ class Scheduler
 	public $uploaddir = '/tmp/';
 
 	public $filename = '';
-	
+
 	public $scheduler_data = []; 
 
 	public function __construct(){
@@ -36,13 +34,13 @@ class Scheduler
 
 		$data = [];
 		if (isset($post['slot']) && preg_match("~[0-9]+~",$post['slot'])) $data['slot'] = $post['slot'];
-		else throw new \Exception('Input field "Slot duration" is wrong');
+		else throw new SchedulerException('Input field "Slot duration" is wrong');
 		if (isset($post['start']) && preg_match("~\d{2}:\d{2}+~",$post['start'])) $data['start'] = $post['start'];
-		else throw new \Exception('Input field "Event start time" is wrong');
+		else throw new SchedulerException('Input field "Event start time" is wrong');
 		if (isset($post['end']) && preg_match("~\d{2}:\d{2}+~",$post['end'])) $data['end'] = $post['end'];
-		else throw new \Exception('Input field "End time" is wrong');
+		else throw new SchedulerException('Input field "End time" is wrong');
 		if (isset($post['breaks']) && preg_match("~^(\d{2}:\d{2}-\d{2}:\d{2},?\s?)+$~",$post['breaks'])) $data['breaks'] = $post['breaks'];
-		else throw new \Exception('Input field "Possible pauses" is wrong');	
+		else throw new SchedulerException('Input field "Possible pauses" is wrong');	
 			
 		return $data;
 	}
@@ -107,10 +105,10 @@ class Scheduler
 						$csv[$key] = str_getcsv($value); 
 					}
 				} else {
-					throw new \Exception('File not upload :(');
+					throw new SchedulerException('File not upload :(');
 				}
 			} else {
-				throw new \Exception('Where is a file?');
+				throw new SchedulerException('Where is a file?');
 			}
 		}
 			
