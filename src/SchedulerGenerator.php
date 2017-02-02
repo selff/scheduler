@@ -67,12 +67,12 @@ class SchedulerGenerator implements ISchedulerGenerator
      *
      * @param void
 	 */	
-	public function makeSchedule($data){
+	public function generateSchedule($data){
 
 		$this->loadData($data);
 		$this->initTime();
 		$this->fillSlots();
-		return $this->generateTable();
+		return $this->generateResultGrid();
 	}
 
     /**
@@ -253,7 +253,7 @@ class SchedulerGenerator implements ISchedulerGenerator
      *
      * @param array $data
 	 */	
-    public function generateTable(){
+    public function generateResultGrid(){
     	$data = array();
     	$row = array('Company','Type','User');
     	foreach($this->columns as $c) {

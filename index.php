@@ -23,15 +23,15 @@ switch ($action) {
 			$Scheduler = new Scheduler(new SchedulerGenerator());
 			$Scheduler->initFromPost();
 			$output = $Scheduler->outputTable();
-			http_response_code(200);
+			http_response_code(200);// OK
 
 		} catch (Exception $e) {
 
 			http_response_code(409);//Conflict
 		    $output = 
-		    	"<div class=\"bs-callout bs-callout-danger\">".
-		    	'<h4>O-o-o shit! This is error: '.  $e->getMessage(). "</h4>\n".
-		    	"</div>";
+		    	'<div class="bs-callout bs-callout-danger">'.
+		    	'<h4>Oops! This is error: '.  $e->getMessage(). "</h4>\n".
+		    	'</div>';
 		} 
 
 		include_once('./templates/output_table.php');

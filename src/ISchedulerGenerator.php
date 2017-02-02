@@ -9,7 +9,7 @@ namespace Schedule;
 
 interface ISchedulerGenerator
 {
-	public function makeSchedule($data);
+	public function generateSchedule($data);
 }
 
 ?>

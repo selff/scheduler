@@ -9,17 +9,26 @@ use \DateTime;
 use \DatePeriod;
 use \DateInterval;
 
+/**
+ * Sheduler - send input data to SchedulerGenerator and output Schedule grid
+ *
+ *
+ * @author  Andrey Selikov <selffmail@gmail.com>
+ * @since   November 10, 2016
+ * @link    https://github.com/selff/Scheduler
+ * @version 1.0.1
+ */
 
 class Scheduler 
 {
 	
-	public $SchedulerGenerator = null;
+	private $SchedulerGenerator = null;
 
 	private $uploaddir = '/tmp/';
 
 	private $filename = '';
 
-	private $scheduler_data = []; 
+	private $scheduler_grid = []; 
 
 	public function __construct(ISchedulerGenerator $SchedulerGenerator){
 
@@ -81,7 +90,7 @@ class Scheduler
 
 
     /**
-     * Load input user data , and init $this->scheduler_data[]
+     * Load input user data , and init $this->scheduler_grid[]
      *
      * @param void
      * @return void
@@ -115,7 +124,7 @@ class Scheduler
 			}
 		}
 			
-		$this->scheduler_data = $this->SchedulerGenerator->makeSchedule($csv);
+		$this->scheduler_grid = $this->SchedulerGenerator->generateSchedule($csv);
 
 	}
 
@@ -133,7 +142,7 @@ class Scheduler
     	header("Expires: 0");
 
         $outputBuffer = fopen("php://output", 'w');
-        foreach($this->scheduler_data as $val) {
+        foreach($this->scheduler_grid as $val) {
             fputcsv($outputBuffer, $val);
         }
         fclose($outputBuffer);
@@ -148,7 +157,7 @@ class Scheduler
 	public function outputTable() {
 		$output = "<p>Generated schedule table:</p>";
 		$output .= "<table class=\"table\">";
-		foreach ($this->scheduler_data as $row) {
+		foreach ($this->scheduler_grid as $row) {
 			$output .= "<tr>";
 				foreach ($row as $column) {
 					$output .= "<td>{$column}</td>";
