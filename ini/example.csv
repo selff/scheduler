@@ -1,5 +1,5 @@
 Company,Type,User,Comp1,Comp2
-,,,1,2
+persons:,,,1,2
 group1,rest,ana,12:00:00,X
 group1,rest,ivan,,11:00:00
 group2,rest,yan,10:00:00,
@@ -11,4 +11,3 @@ group5,fitnes,lena,,X
 group5,fitnes,nikol,X,X
 group6,fitnes,mich,X,X
 group6,fitnes,pit,X,13:00:00
-

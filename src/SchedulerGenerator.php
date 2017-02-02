@@ -37,29 +37,29 @@ class SchedulerGenerator implements ISchedulerGenerator
      * Some options 
      * @var array
      */
-	public $settings = [
+	public $settings = array(
 		'initial_preset' => true,
 		'find_initial_time' => false,
 		'initial_format' => 'H:i:s',
-		];
+		);
 
 	/**
      * Result columns of output table 
      * @var array
      */
-	private $columns = [];
+	private $columns = array();
 
 	/**
      * Result rows of output table 
      * @var array
      */
-	private $rows = [];
+	private $rows = array();
 
 	/**
      * Prepare output table 
      * @var array
      */
-	private $schedule = [];
+	private $schedule = array();
 
 
     /**
@@ -110,7 +110,9 @@ class SchedulerGenerator implements ISchedulerGenerator
 				}
 			}
 		}
-		if (empty($this->rows) || empty($this->columns)) throw new SchedulerException('Input data does not contain the required data');
+		if (empty($this->rows) || empty($this->columns)) {
+			throw new SchedulerException('Input data does not contain the required data');
+		}
 	}
 
     /**
@@ -228,7 +230,9 @@ class SchedulerGenerator implements ISchedulerGenerator
 			}
 		}
    		
-   		if (empty($this->schedule)) throw new SchedulerException('Failed to schedule the data you entered');
+   		if (empty($this->schedule)) {
+   			throw new SchedulerException('Failed to schedule the data you entered');
+   		}
     }
 
     /**

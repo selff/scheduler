@@ -24,7 +24,7 @@ class Scheduler
 	
 	private $SchedulerGenerator = null;
 
-	private $uploaddir;
+	private $uploaddir = '/tmp';
 
 	private $filename = '';
 
@@ -32,12 +32,12 @@ class Scheduler
 
 	public $example_dummy_grid = 'example2.csv'; 
 	
-	private $scheduler_grid = [];
+	private $scheduler_grid = array();
 
 	public function __construct(ISchedulerGenerator $SchedulerGenerator){
 
 			$this->SchedulerGenerator = $SchedulerGenerator;
-			$this->uploaddir = sys_get_temp_dir();
+			//$this->uploaddir = ini_get('upload_tmp_dir');
 	}
 
     /**
@@ -48,7 +48,7 @@ class Scheduler
 	 */	
 	private function validatePost($post){
 
-		$data = [];
+		$data = array();
 		if (isset($post['slot']) && preg_match("~[0-9]+~",$post['slot'])) $data['slot'] = $post['slot'];
 		else throw new SchedulerException('Input field "Slot duration" is wrong');
 		if (isset($post['start']) && preg_match("~\d{2}:\d{2}+~",$post['start'])) $data['start'] = $post['start'];

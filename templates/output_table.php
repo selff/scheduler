@@ -13,7 +13,7 @@
 		<h1>Scheduler</h1>
 
 		<?php print $output; ?>
-		<p><a href="/">Return to home</a></p>
+		<p><a href="./index.php">Return to home</a></p>
 
 		</div>
 		</div>
