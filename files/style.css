@@ -28,3 +28,33 @@
     border-left-color: #ce4844;
 }
 
+table.table>tbody>tr>td {
+
+  background-color: #fff;
+}
+table.table>tbody>tr>td:hover {
+
+    background-color: #ccc;
+    -webkit-transition: background-color 100ms linear;
+    -ms-transition: background-color 100ms linear;
+    transition: background-color 100ms linear;
+}
+table.table>tbody>tr.row-0 td {
+    background-color: #f4f4f4;
+}
+table.table>tbody>tr.row-1 td {
+    background-color: #eee;
+}
+table.table>tbody>tr>td.column-0 {
+    background-color: #f4f4f4;
+}
+table.table>tbody>tr>td.column-1 {
+    background-color: #eee;
+}
+table.table>tbody>tr>td.column-2 {
+    background-color: #f4f4f4;
+}
+table.table>tbody>tr.row-1>td.column-0,table.table>tbody>tr.row-1>td.column-2 {
+    background-color: #eee;
+}
+

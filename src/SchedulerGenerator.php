@@ -9,7 +9,7 @@ use \Exception;
 use Schedule\ISchedulerGenerator;
 
 /**
- * Scheduling time for meetings at major events.
+ * ShedulerGenerator - prepare Schedule from dummy grid
  *
  *
  * @author  Andrey Selikov <selffmail@gmail.com>
@@ -260,7 +260,7 @@ class SchedulerGenerator implements ISchedulerGenerator
     		$row[] = $c['name'];
     	}
     	$data[] = $row;
-    	$row = array('','','');
+    	$row = array('persons:','','');
     	foreach($this->columns as $c) {
     		$row[] = $c['pers'];
     	}

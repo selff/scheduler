@@ -24,16 +24,20 @@ class Scheduler
 	
 	private $SchedulerGenerator = null;
 
-	private $uploaddir = '/tmp/';
+	private $uploaddir;
 
 	private $filename = '';
 
-	private $scheduler_grid = []; 
+	public $inidir = './ini';
+
+	public $example_dummy_grid = 'example2.csv'; 
+	
+	private $scheduler_grid = [];
 
 	public function __construct(ISchedulerGenerator $SchedulerGenerator){
 
 			$this->SchedulerGenerator = $SchedulerGenerator;
-
+			$this->uploaddir = sys_get_temp_dir();
 	}
 
     /**
@@ -103,25 +107,33 @@ class Scheduler
 			$options = $this->validatePost($_POST);
 			$this->initSettings($options);
 
-			if (isset($_FILES["userfile"])) {
-
 				//file upload 
 				$tmp_name = $_FILES["userfile"]["tmp_name"];
 				$filename = basename($_FILES["userfile"]["name"]);
-				move_uploaded_file($tmp_name, $this->uploaddir.$filename);
+				move_uploaded_file($tmp_name, $this->uploaddir.'/'.$filename);
 				if ($_FILES["userfile"]["error"] == UPLOAD_ERR_OK) {
+
+					// read user file
 					$this->filename = $filename;
-					// read file
-					$lines = file($this->uploaddir.$filename, FILE_IGNORE_NEW_LINES);
+					$lines = file($this->uploaddir.'/'.$filename, FILE_IGNORE_NEW_LINES);
+
+				} else {
+
+					// read example file
+					$this->filename = $this->example_dummy_grid;
+					$lines = file($this->inidir.'/'.$this->example_dummy_grid, FILE_IGNORE_NEW_LINES);
+
+				}
+				if ($lines) {
 					foreach ($lines as $key => $value) { 
 						$csv[$key] = str_getcsv($value); 
 					}
 				} else {
-					throw new SchedulerException('File not upload :(');
+
+					throw new SchedulerException('Input file is empty :(');
+
 				}
-			} else {
-				throw new SchedulerException('Where is a file?');
-			}
+
 		}
 			
 		$this->scheduler_grid = $this->SchedulerGenerator->generateSchedule($csv);
@@ -157,10 +169,10 @@ class Scheduler
 	public function outputTable() {
 		$output = "<p>Generated schedule table:</p>";
 		$output .= "<table class=\"table\">";
-		foreach ($this->scheduler_grid as $row) {
-			$output .= "<tr>";
-				foreach ($row as $column) {
-					$output .= "<td>{$column}</td>";
+		foreach ($this->scheduler_grid as $i=>$row) {
+			$output .= "<tr class=\"row-{$i}\">";
+				foreach ($row as $j=>$column) {
+					$output .= "<td class=\"column-{$j}\">{$column}</td>";
 				}
 			$output .= "</tr>";
 		}

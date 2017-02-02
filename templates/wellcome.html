@@ -17,8 +17,9 @@
 				<p>The first and second rows in the table are services. The first line contains the name of the company, and the second line indicates the number of persons participating in the meeting of the company. The first three columns in the table are also services.<br>
 				At the intersection of the row and column markers indicate if the counterparties must meet, and if you want to ask yourself the exact time they enter the marker instead of the exact time of the meeting.</p>
 				<form enctype="multipart/form-data" method="POST" action="./run">
+				
 				<div class="form-group">
-					<label>Input file with dummy table</label>
+					<label>Optional input file with dummy table, if this field is empty will be used demo table</label>
 					<input name="userfile" class="form-control" type="file" />
 				</div>
 				<div class="form-group">
@@ -37,11 +38,11 @@
 					<label>Possible pauses separated by commas</label>
 					<input type="text" class="form-control" name="breaks" value="13:00-14:00" />
 				</div>
-				<input type="submit" name="submit" value="Send CVS File" class="btn btn-primary" />
+				<input type="submit" name="submit" value="Submit" class="btn btn-primary" />
 				</form>
 			</div>
 			<div class="col-md-6">
-			<p>Example CSV-table for input:</p>
+			<p>Example dummy table for input:</p>
 				<table class="table">
 				<tr><th>Company</th><th>Type</th><th>Face</th><th>Metro</th><th>IKEA</th><th>3M</th><th>Cisco</th></tr>
 				<tr><td></td><td></td><td class="ctr gray">persons:</td><td class="ctr gray">2</td><td class="ctr gray">2</td><td class="ctr gray">1</td><td class="ctr gray">1</td></tr>
