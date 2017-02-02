@@ -1,4 +1,7 @@
 # Scheduler
+
+##Description
+
 Scheduling time for meetings at major events.
 
 This program was created to organize the schedule short meetings between a group of suppliers and a group of consumers of the goods or services.
@@ -16,3 +19,7 @@ End Time events HH:MM
 Possible pauses separated by commas
 
 See example init table in file example.csv
+
+##Demo
+
+http://selikoff.ru/scheduler/index.php
