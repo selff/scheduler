@@ -64,6 +64,7 @@ class SchedulerGenerator implements ISchedulerGenerator
     /**
      * Generate schedule data
      *
+     * @throws
      * @param array with input data
      * @return array with schedule result
      */
@@ -95,7 +96,6 @@ class SchedulerGenerator implements ISchedulerGenerator
      */
     public function loadData($rows)
     {
-
         // по строкам
         foreach ($rows as $i => $row) {
             // по столбцам
@@ -329,10 +329,10 @@ class SchedulerGenerator implements ISchedulerGenerator
         return $data;
     }
 
-    public function saveCSV($filename)
+    public function saveCSV($fileName)
     {
 
-        $fp = fopen($filename, 'w');
+        $fp = fopen($fileName, 'w');
         $output = ['Company','Type','Priority','Face'];
         foreach ($this->columns as $c) {
             $output[] = $c['name'];
