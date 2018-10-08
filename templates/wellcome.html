@@ -1,66 +1,136 @@
 <!DOCTYPE html>
 <html lang=en>
 <head>
-	<title>Scheduler</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<link rel="stylesheet" href="./files/style.css">
+    <title>Scheduler</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./files/style.css">
 </head>
 <body class="scheduler-page">
-	<div class="container">
-  		<div class="row">
-	  		<div class="col-md-12">
-	  			<h1>Scheduler</h1>
-	  		</div>
-		</div>
-  		<div class="row">
-	  		<div class="col-md-6">	
-				<p>The first and second rows in the table are services. The first line contains the name of the company, and the second line indicates the number of persons participating in the meeting of the company. The first three columns in the table are also services.<br>
-				At the intersection of the row and column markers indicate if the counterparties must meet, and if you want to ask yourself the exact time they enter the marker instead of the exact time of the meeting.</p>
-				<form enctype="multipart/form-data" method="POST" action="?run">
-				
-				<div class="form-group">
-					<label>Optional input file with dummy table, if this field is empty will be used demo table</label>
-					<input name="userfile" class="form-control" type="file" />
-				</div>
-				<div class="form-group">
-					<label>Slot duration in minutes.</label>
-					<input type="text" class="form-control" name="slot" value="15" />
-				</div>
-				<div class="form-group">
-					<label>Event Start Time HH:MM</label>
-					<input type="text" class="form-control" name="start" value="10:00" />
-				</div>
-				<div class="form-group">
-					<label>End Time events HH:MM</label>
-					<input type="text" class="form-control" name="end" value="17:00" />
-				</div>
-				<div class="form-group">
-					<label>Possible pauses separated by commas</label>
-					<input type="text" class="form-control" name="breaks" value="13:00-14:00" />
-				</div>
-				<input type="submit" name="submit" value="Submit" class="btn btn-primary" />
-				</form>
-			</div>
-			<div class="col-md-6">
-			<p>Example dummy table for input:</p>
-				<table class="table">
-				<tr><th>Company</th><th>Type</th><th>Face</th><th>Metro</th><th>IKEA</th><th>3M</th><th>Cisco</th></tr>
-				<tr><td></td><td></td><td class="ctr gray">persons:</td><td class="ctr gray">2</td><td class="ctr gray">2</td><td class="ctr gray">1</td><td class="ctr gray">1</td></tr>
-				<tr><td class="olv">Royal & SPA</td><td class="olv">Hotel</td><td class="olv">Katy</td><td class="ctr">X</td><td class="ctr">X</td><td></td><td></td></tr>
-				<tr><td class="olv">Royal & SPA</td><td class="olv">Hotel</td><td class="olv">Piter</td><td></td><td></td><td class="ctr">X</td><td class="ctr">X</td></tr>
-				<tr><td class="olv">Azimuth</td><td class="olv">Hotel</td><td class="olv">Oleg</td><td class="ctr">X</td><td class="ctr">12:30:00</td><td class="ctr">X</td><td class="ctr">X</td></tr>
-				<tr><td class="olv">Dolce Gusto</td><td class="olv">Restouran</td><td class="olv">Mishut</td><td class="ctr">X</td><td class="ctr">10:00:00</td><td></td><td></td></tr>
-				<tr><td class="olv">Red Square</td><td class="olv">Mall</td><td class="olv">Boris</td><td class="ctr">X</td><td class="ctr">X</td><td class="ctr">X</td><td class="ctr">X</td></tr>
-				</table>
-			</div>
-		</div>
-	</div>
-	<footer class="bs-docs-footer">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">Scheduler 2017</div>
-			</div>
-		</div>
-	</footer>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Scheduler</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <p>The first and second rows in the table are services. The first line contains the name of the company, and
+                the second line indicates the number of persons participating in the meeting of the company. The first
+                three columns in the table are also services.<br>
+                At the intersection of the row and column markers indicate if the counterparties must meet, and if you
+                want to ask yourself the exact time they enter the marker instead of the exact time of the meeting.</p>
+            <form enctype="multipart/form-data" method="POST" action="?run">
+                <div class="form-group">
+                    <label>Optional input file with dummy table, if this field is empty will be used demo table</label>
+                    <input name="userfile" class="form-control" type="file"/>
+                </div>
+                <div class="form-group">
+                    <label>Slot duration in minutes.</label>
+                    <input type="text" class="form-control" name="slot" value="30"/>
+                </div>
+                <div class="form-group">
+                    <label>Event Start Time HH:MM</label>
+                    <input type="text" class="form-control" name="start" value="12:00"/>
+                </div>
+                <div class="form-group">
+                    <label>End Time events HH:MM</label>
+                    <input type="text" class="form-control" name="end" value="16:00"/>
+                </div>
+                <div class="form-group">
+                    <label>Possible pauses separated by commas</label>
+                    <input type="text" class="form-control" name="breaks" value="13:00-14:00"/>
+                </div>
+                <div class="input-group form-group">
+                    <span class="input-group-addon">
+                        <input type="checkbox" name="fileSave" value="1"/>
+                    </span>
+                    <label class="form-control">Generate file for download with result</label>
+                </div><!-- /input-group -->
+                <div class="form-group">
+                    <input type="submit" name="submit" value="Submit" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <p>Example dummy table for input:</p>
+            <table class="table">
+                <tr>
+                    <th>Company</th>
+                    <th>Type</th>
+                    <th>Priority</th>
+                    <th>Face</th>
+                    <th>Metro</th>
+                    <th>IKEA</th>
+                    <th>3M</th>
+                    <th>Cisco</th>
+                </tr>
+                <tr>
+                    <td class="ctr gray" colspan="4" align="right">persons:</td>
+                    <td class="ctr gray">2</td>
+                    <td class="ctr gray">2</td>
+                    <td class="ctr gray">1</td>
+                    <td class="ctr gray">1</td>
+                </tr>
+                <tr>
+                    <td class="olv">Royal & SPA</td>
+                    <td class="olv">Hotel</td>
+                    <td>1</td>
+                    <td class="olv">Katy</td>
+                    <td class="ctr">X</td>
+                    <td class="ctr">X</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="olv">Royal & SPA</td>
+                    <td class="olv">Hotel</td>
+                    <td>0</td>
+                    <td class="olv">Piter</td>
+                    <td></td>
+                    <td></td>
+                    <td class="ctr">X</td>
+                    <td class="ctr">X</td>
+                </tr>
+                <tr>
+                    <td class="olv">Azimuth</td>
+                    <td class="olv">Hotel</td>
+                    <td>1</td>
+                    <td class="olv">Oleg</td>
+                    <td class="ctr">X</td>
+                    <td class="ctr">12:30:00</td>
+                    <td class="ctr">X</td>
+                    <td class="ctr">X</td>
+                </tr>
+                <tr>
+                    <td class="olv">Dolce Gusto</td>
+                    <td class="olv">Restouran</td>
+                    <td>0</td>
+                    <td class="olv">Mishut</td>
+                    <td class="ctr">X</td>
+                    <td class="ctr">10:00:00</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="olv">Red Square</td>
+                    <td class="olv">Mall</td>
+                    <td>0</td>
+                    <td class="olv">Boris</td>
+                    <td class="ctr">X</td>
+                    <td class="ctr">X</td>
+                    <td class="ctr">X</td>
+                    <td class="ctr">X</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<footer class="bs-docs-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">Scheduler 2017</div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

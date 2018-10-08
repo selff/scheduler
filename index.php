@@ -1,8 +1,5 @@
 <?php
 require './vendor/autoload.php';
-//require_once('./src/SchedulerGenerator.php');
-//require_once('./src/SchedulerException.php');
-//require_once('./src/Scheduler.php');
 
 use Schedule\Scheduler;
 use Schedule\SchedulerGenerator;
@@ -23,7 +20,6 @@ switch ($action) {
 			$Scheduler = new Scheduler(new SchedulerGenerator());
 			$Scheduler->initFromPost();
 			$output = $Scheduler->outputTable();
-			//http_response_code(200);// OK
 			header("HTTP/1.1 200 OK");
 
 		} catch (Exception $e) {
@@ -32,7 +28,8 @@ switch ($action) {
 			header('HTTP/1.1 409 Conflict');
 		    $output = 
 		    	'<div class="bs-callout bs-callout-danger">'.
-		    	'<h4>Oops! This is error: '.  $e->getMessage(). "</h4>\n".
+		    	'<h4>Oops! This is error: '.  $e->getMessage(). "</h4>".PHP_EOL.
+                '<p>Error in: '.nl2br($e->getTraceAsString())."</p>".PHP_EOL.
 		    	'</div>';
 		} 
 

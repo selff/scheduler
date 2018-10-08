@@ -1,7 +1,7 @@
 Company,Type,Priority,Face,Metro,IKEA,3M,Cisco
 persons:,,,,2,2,1,1
-Royal & SPA,Hotel,1,Katy,X,X,,
+Royal & SPA,Hotel,1,Катя,X,X,,
 Royal & SPA,Hotel,0,Piter,,,X,X
-Azimuth,Hotel,0,Oleg,X,12:30:00,X,X
-Dolce Gusto,Restourant,1,Mishut,X,10:00:00,,
+Azimuth,Hotel,1,Oleg,X,12:30:00,X,X
+Галя Гуляй,Restourant,0,Mishut,X,12:00:00,,
 Red Square,Mall,0,Boris,X,X,X,X

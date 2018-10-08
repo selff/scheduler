@@ -216,7 +216,7 @@ class SchedulerGenerator implements ISchedulerGenerator
         $i = 0;
         do {
 
-            $interupt = false;
+            $interrupt = false;
             $periodBusyComp = false;
             $periodBusyUser = false;
             // проверим может этот интервал уже использован
@@ -231,7 +231,7 @@ class SchedulerGenerator implements ISchedulerGenerator
 
                         // в данный период слот компании использован
                         if ($period['columnValue'] == $column
-                            && ($iteration < $this->countPersBusyForPeriod($currentPeriod, $column))) {
+                            && ($iteration < $this->countPersonsBusyForPeriod($currentPeriod, $column))) {
                             $periodBusyComp = true;
                         }
                     }
@@ -246,7 +246,7 @@ class SchedulerGenerator implements ISchedulerGenerator
 
             if (($i == (count($this->schedule) * $ratio - 1)) && $notSaved) {
                 //Not found slot for user={$user}, column={$column}
-                $interupt = true;
+                $interrupt = true;
             }
 
             $i++;
@@ -255,10 +255,10 @@ class SchedulerGenerator implements ISchedulerGenerator
             if ($currentPeriod == count($this->schedule)) {
                 $currentPeriod = 0;
                 $iteration++;
-                //if ($this->countPersBusyForPeriod($currentPeriod, $column) > $persons) $persons++;
+                //if ($this->countPersonsBusyForPeriod($currentPeriod, $column) > $persons) $persons++;
             }
 
-        } while ($notSaved && !$interupt);
+        } while ($notSaved && !$interrupt);
     }
 
     /**
@@ -268,7 +268,7 @@ class SchedulerGenerator implements ISchedulerGenerator
      * @param int $column
      * @return int
      */
-    protected function countPersBusyForPeriod($currentPeriod, $column)
+    protected function countPersonsBusyForPeriod($currentPeriod, $column)
     {
         $counter = 0;
         $periods = $this->schedule[$currentPeriod];
@@ -295,28 +295,29 @@ class SchedulerGenerator implements ISchedulerGenerator
             $row[] = $c['name'];
         }
         $data[] = $row;
-        $row = array('persons:', '', '');
+        $row = array('persons:', '', '', '');
         foreach ($this->columns as $c) {
             $row[] = $c['persons'];
         }
         $data[] = $row;
-        foreach ($this->rows as $compkey => $company) {
+        foreach ($this->rows as $compKey => $company) {
             $row = array();
             $row[] = $company['name'];
             $row[] = $company['type'];
+            $row[] = $company['priority'];
             $row[] = $company['face'];
-            foreach ($this->columns as $columnkey => $column) {
+            foreach ($this->columns as $columnKey => $column) {
                 $marker = '';
-                foreach ($this->schedule as $id => $shedule) {
-                    foreach ($shedule['periods'] as $period) {
-                        if (($period['columnValue'] == $columnkey) && ($period['rowValue'] == $compkey)) {
-                            $marker = $shedule['time'];
+                foreach ($this->schedule as $id => $schedule) {
+                    foreach ($schedule['periods'] as $period) {
+                        if (($period['columnValue'] == $columnKey) && ($period['rowValue'] == $compKey)) {
+                            $marker = $schedule['time'];
                         }
                     }
                 }
                 if ($marker == '') {
                     foreach ($company['intersection'] as $id => $m) {
-                        if (($id == $columnkey) && (strlen(trim($m)) > 0)) {
+                        if (($id == $columnKey) && (strlen(trim($m)) > 0)) {
                             $marker = 'X';
                         }
                     }
@@ -328,5 +329,35 @@ class SchedulerGenerator implements ISchedulerGenerator
         return $data;
     }
 
+    public function saveCSV($filename)
+    {
 
+        $fp = fopen($filename, 'w');
+        $output = ['Company','Type','Priority','Face'];
+        foreach ($this->columns as $c) {
+            $output[] = $c['name'];
+        }
+        fputcsv($fp, $output);
+        $output = ['persons:','','',''];
+        foreach ($this->columns as $c) {
+            $output[] = $c['persons'];
+        }
+        fputcsv($fp, $output);
+        foreach ($this->rows as $compKey => $row) {
+            $output = [$row['name'],$row['type'],$row['priority'],$row['face']];
+            foreach ($row['intersection'] as $columnKey => $column) {
+                $time = "";
+                foreach ($this->schedule as $id => $schedule) {
+                    foreach ($schedule['periods'] as $period) {
+                        if (($period['columnValue'] == $columnKey) && ($period['rowValue'] == $compKey)) {
+                             $time = "".$schedule['time']."";
+                        }
+                    }
+                }
+                $output[] = $time;
+            }
+            fputcsv($fp, $output);
+        }
+        fclose($fp);
+    }
 }

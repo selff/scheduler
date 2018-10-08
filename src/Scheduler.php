@@ -22,17 +22,19 @@ use \DateInterval;
 class Scheduler 
 {
 	
-	private $SchedulerGenerator = null;
+	protected $SchedulerGenerator = null;
 
-	private $uploaddir = '/tmp';
+	protected $uploaddir = '/tmp';
 
-	private $filename = '';
+	protected $filename = '';
+	protected $savefile = '';
 
-	public $inidir = './ini';
+	protected $inidir = './csv';
+    protected $outdir = './csv';
 
-	public $example_dummy_grid = 'example2.csv'; 
+	protected $example_dummy_grid = 'example2.csv';
 	
-	private $scheduler_grid = array();
+	protected $scheduler_grid = array();
 
 	public function __construct(ISchedulerGenerator $SchedulerGenerator){
 
@@ -46,7 +48,7 @@ class Scheduler
      * @param array $post
      * @return array $data
 	 */	
-	private function validatePost($post){
+	protected function validatePost($post){
 
 		$data = array();
 		if (isset($post['slot']) && preg_match("~[0-9]+~",$post['slot'])) $data['slot'] = $post['slot'];
@@ -67,7 +69,7 @@ class Scheduler
      * @param array $options
      * @return void
 	 */	
-	private function initSettings($options){
+	protected function initSettings($options){
 	
 		// Is input data consist initial preset times for meeting?
 		$this->SchedulerGenerator->settings['initial_preset'] = true;
@@ -96,8 +98,6 @@ class Scheduler
     /**
      * Load input user data , and init $this->scheduler_grid[]
      *
-     * @param void
-     * @return void
 	 */	
 	public function initFromPost(){
 
@@ -137,37 +137,19 @@ class Scheduler
 		}
 			
 		$this->scheduler_grid = $this->SchedulerGenerator->generateSchedule($csv);
-
-	}
-
-    /**
-     * Write data to csv file
-     *
-     * @param array $data
-     * @param string $filename
-	 */	
-	private function outputCSV() {
-		
-        header("Content-type: text/csv");
-    	header("Content-Disposition: attachment; filename={$this->filename}");
-    	header("Pragma: no-cache");
-    	header("Expires: 0");
-
-        $outputBuffer = fopen("php://output", 'w');
-        foreach($this->scheduler_grid as $val) {
-            fputcsv($outputBuffer, $val);
+        if (isset($_POST['fileSave'])) {
+            $this->savefile = $this->outdir.DIRECTORY_SEPARATOR.uniqid('scheduler-'.date("YmdHis").'-').'.csv';
+            $this->SchedulerGenerator->saveCSV($this->savefile);
         }
-        fclose($outputBuffer);
-    }
+	}
 
     /**
      * Make table structur
      *
-     * @param array $data
      * @return string $output
 	 */	
 	public function outputTable() {
-		$output = "<p>Generated schedule table:</p>";
+		$output = "<p>Generated schedule table:</p>".PHP_EOL;
 		$output .= "<table class=\"table\">";
 		foreach ($this->scheduler_grid as $i=>$row) {
 			$output .= "<tr class=\"row-{$i}\">";
@@ -176,7 +158,10 @@ class Scheduler
 				}
 			$output .= "</tr>";
 		}
-		$output .= "</table>";
+		$output .= "</table>".PHP_EOL;
+		if ($this->savefile) {
+		    $output.="<p><a class=\"text-danger\" href='".$this->savefile."'>Download result</a></p>".PHP_EOL;
+        }
 		return $output;
     }
 
