@@ -18,7 +18,7 @@ switch ($action) {
 		try {
 
 			$Scheduler = new Scheduler(new SchedulerGenerator());
-			$Scheduler->initFromPost();
+			$Scheduler->run();
 			$output = $Scheduler->outputTable();
 			header("HTTP/1.1 200 OK");
 
