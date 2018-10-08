@@ -5,7 +5,7 @@ namespace Schedule;
 use \DateTime;
 use \DateInterval;
 use \DatePeriod;
-use Exception\SchedulerException;
+use Schedule\SchedulerException;
 use Schedule\ISchedulerGenerator;
 
 /**
