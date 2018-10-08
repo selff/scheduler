@@ -36,11 +36,7 @@ class SchedulerGenerator implements ISchedulerGenerator
      * Some options
      * @var array
      */
-    public $settings = array(
-        'initial_preset' => true,
-        'find_initial_time' => false,
-        'initial_format' => 'H:i:s',
-    );
+    public $settings = [];
 
     /**
      * Result columns of output table
@@ -151,7 +147,6 @@ class SchedulerGenerator implements ISchedulerGenerator
 
             // if time not in a break_times - put to schedule
             if (!in_array($date->format($this->settings['initial_format']), $break_times)) {
-
                 $this->schedule[$j]['time'] = $date->format($this->settings['initial_format']);
                 $this->schedule[$j]['periods'] = array();
                 $j++;
@@ -171,6 +166,15 @@ class SchedulerGenerator implements ISchedulerGenerator
                 }
             }
         }
+    }
+
+    public function getPeriods()
+    {
+        $out = "";
+        foreach($this->schedule as $schedule) {
+            $out .= $schedule['time']." ";
+        }
+        return $out;
     }
 
     /**

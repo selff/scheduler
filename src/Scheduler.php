@@ -9,6 +9,9 @@ use \DateTime;
 use \DatePeriod;
 use \DateInterval;
 
+
+
+
 /**
  * Sheduler - send input data to SchedulerGenerator and output Schedule grid
  *
@@ -25,7 +28,6 @@ class Scheduler
 
     protected $uploadDir = '/tmp';
 
-    protected $fileName = '';
     protected $saveFile = '';
 
     protected $iniDir = './csv';
@@ -43,6 +45,7 @@ class Scheduler
     /**
      * Validate post user data
      *
+     * @throws
      * @param array $post
      * @return array $data
      */
@@ -65,6 +68,7 @@ class Scheduler
     /**
      * Init settings before generate schedule
      *
+     * @throws
      * @param array $options
      * @return void
      */
@@ -74,7 +78,7 @@ class Scheduler
         // Is input data consist initial preset times for meeting?
         $this->SchedulerGenerator->settings['initial_preset'] = true;
         $this->SchedulerGenerator->settings['find_initial_time'] = false;
-        $this->SchedulerGenerator->settings['initial_format'] = 'H:i:s';
+        $this->SchedulerGenerator->settings['initial_format'] = 'H:i';
 
         $breaks = explode(",", $options['breaks']);
         foreach ($breaks as $break) {
@@ -112,15 +116,12 @@ class Scheduler
             $fileName = basename($_FILES["userfile"]["name"]);
             move_uploaded_file($tmp_name, $this->uploadDir . '/' . $fileName);
             if ($_FILES["userfile"]["error"] == UPLOAD_ERR_OK) {
-                $this->fileName = $this->uploadDir . '/' . $fileName;
+                $fileName = $this->uploadDir . '/' . $fileName;
             } else {
-                $this->fileName = $this->iniDir . '/' . $this->example_dummy_grid;
+                $fileName = $this->getExamplePath();
             }
-            if (($handle = fopen($this->fileName, "r")) !== FALSE) {
-                while (($csv[] = fgetcsv($handle)) !== FALSE) {
-                }
-                fclose($handle);
-            }
+
+            $csv = $this->loadCsv($fileName);
 
             if (empty($csv)) {
                 throw new SchedulerException('Input file is empty :(');
@@ -129,7 +130,6 @@ class Scheduler
                     if (empty($v)) unset($csv[$k]);
                 }
             }
-
         }
 
         $this->scheduler_grid = $this->SchedulerGenerator->generateSchedule($csv);
@@ -140,6 +140,24 @@ class Scheduler
         }
     }
 
+    public function getExamplePath()
+    {
+        return $this->iniDir . '/' . $this->example_dummy_grid;
+    }
+
+    public function loadCsv($fileName)
+    {
+        $csv = [];
+        if (($handle = fopen($fileName, "r")) !== FALSE) {
+            do {
+                $result = fgetcsv($handle);
+                $csv[] = $result;
+            } while ($result);
+            fclose($handle);
+        }
+        return $csv;
+    }
+
     /**
      * Make table structur
      *
@@ -147,20 +165,28 @@ class Scheduler
      */
     public function outputTable()
     {
-        $output = "<p>Generated schedule table:</p>" . PHP_EOL;
-        $output .= "<table class=\"table\">";
-        foreach ($this->scheduler_grid as $i => $row) {
-            $output .= "<tr class=\"row-{$i}\">";
-            foreach ($row as $j => $column) {
-                $output .= "<td class=\"column-{$j}\">{$column}</td>";
+            $output = "<div class='col-md-12'>";
+            $output .= "<p>Generated schedule table for time: ";
+
+            $output .= $this->SchedulerGenerator->getPeriods();
+
+            $output .= "</p>" . PHP_EOL;
+            $output .= "<table class=\"table\">";
+            foreach ($this->scheduler_grid as $i => $row) {
+                $output .= "<tr class=\"row-{$i}\">";
+                foreach ($row as $j => $column) {
+                    $output .= "<td class=\"column-{$j}\">{$column}</td>";
+                }
+                $output .= "</tr>";
             }
-            $output .= "</tr>";
-        }
-        $output .= "</table>" . PHP_EOL;
-        if ($this->saveFile) {
-            $output .= "<p><a class=\"text-danger\" href='" . $this->saveFile . "'>Download result</a></p>" . PHP_EOL;
-        }
-        return $output;
+            $output .= "</table>" . PHP_EOL;
+            $output .= "<p><a href='index.php'>&larr; Return home</a>";
+            if ($this->saveFile) {
+                 $output .= "| <a class=\"text-danger\" href='" . $this->saveFile . "'>Download result &#9660;</a>";
+            }
+            $output .= "</p>" . PHP_EOL;
+            $output .= "</div>";
+            return $output;
     }
 
 }

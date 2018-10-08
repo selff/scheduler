@@ -13,7 +13,8 @@
         }
     ],    
     "require": {
-        "php": ">=5.6"
+        "php": ">=5.6",
+        "faisalman/simple-excel-php" : "0.3.*"
     },
     "autoload": {
         "psr-4": {"Schedule\\": "src/"}
