@@ -11,23 +11,30 @@
                     <input name="userfile" class="form-control" type="file"/>
                 </div>
                 <div class="form-group">
-                    <label>Slot duration in minutes.</label>
-                    <input type="text" class="form-control" name="slot" value="30"/>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon">Slot duration in minutes</span>
+                        <input type="text" class="form-control" aria-describedby="basic-addon" name="slot" value="30"/>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Event Start Time HH:MM</label>
-                    <input type="text" class="form-control" name="start" value="12:00"/>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon0">Event Start Time HH:MM</span>
+                        <input type="text" class="form-control" aria-describedby="basic-addon0" name="start" value="12:00"/>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>End Time events HH:MM</label>
-                    <input type="text" class="form-control" name="end" value="15:00"/>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">End Time events HH:MM</span>
+                        <input type="text" class="form-control" aria-describedby="basic-addon1" name="end" value="15:00"/>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Possible pauses separated by commas</label>
-                    <input type="text" class="form-control" name="breaks" value="13:00-14:00"/>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon2">Possible pauses separated by commas</span>
+                        <input type="text" class="form-control" aria-describedby="basic-addon2" name="breaks" value="13:00-14:00"/>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="sepa">Csv file separator</label>
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon3">CSV file separator</span>
                         <input type="text" name="separator" class="form-control" id="sepa" aria-describedby="basic-addon3" value=",">
