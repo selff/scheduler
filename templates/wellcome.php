@@ -1,4 +1,4 @@
-
+    <div class="row">
         <div class="col-md-6">
             <p>The first and second rows in the table are services. The first line contains the name of the company, and
                 the second line indicates the number of persons participating in the meeting of the company. The first
@@ -49,3 +49,4 @@
             <p>Example dummy table for input:</p>
             <?=$thetable?>
         </div>
+    </div>

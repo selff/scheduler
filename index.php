@@ -4,10 +4,33 @@ require './vendor/autoload.php';
 use Schedule\Scheduler;
 use Schedule\SchedulerGenerator;
 use Schedule\SchedulerException;
+use Schedule\Auth;
 
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
     	throw new SchedulerException($errstr, $errno);
 });
+
+session_start();
+session_regenerate_id();
+if( isset($_POST['login']) && isset($_POST['password']) )
+{
+
+    if( Auth::nodb($_POST['login'], $_POST['password']) )
+    {
+        // auth okay, setup session
+        $_SESSION['user'] = $_POST['login'];
+        // redirect to required page
+        header( "Location: index.php" );
+    } else {
+        // didn't auth go back to loginform
+        header( "Location: loginform.php" );
+    }
+
+} elseif(!isset($_SESSION['user'])) {
+
+    header("Location: loginform.php");
+
+}
 
 $action = isset($_GET['run'])?'run':'';
 

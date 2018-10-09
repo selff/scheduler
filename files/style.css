@@ -27,7 +27,6 @@
 .bs-callout-danger {
     border-left-color: #ce4844;
 }
-
 table.table>tbody>tr>td {
 
   background-color: #fff;
@@ -57,4 +56,8 @@ table.table>tbody>tr>td.column-2 {
 table.table>tbody>tr.row-1>td.column-0,table.table>tbody>tr.row-1>td.column-2 {
     background-color: #eee;
 }
-
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}

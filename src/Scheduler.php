@@ -170,7 +170,7 @@ class Scheduler
      */
     public function outputTable()
     {
-            $output = "<div class='col-md-12'>";
+            $output = "<div class='row'><div class='col-md-12'>";
             $output .= "<p>Generated schedule table for time: ";
 
             $output .= $this->SchedulerGenerator->getPeriods();
@@ -215,7 +215,7 @@ class Scheduler
                  $output .= " | <a class=\"text-danger\" href='" . $this->saveFile . "'>Download result &#9660;</a>";
             }
             $output .= "</p>" . PHP_EOL;
-            $output .= "</div>";
+            $output .= "</div></div>";
             return $output;
     }
 
