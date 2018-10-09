@@ -168,6 +168,16 @@ class SchedulerGenerator implements ISchedulerGenerator
         }
     }
 
+    public function isMarker($txt)
+    {
+        if (strlen(trim($txt))==1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     public function getPeriods()
     {
         $out = "";

@@ -180,10 +180,35 @@ class Scheduler
             foreach ($this->scheduler_grid as $i => $row) {
                 $output .= "<tr class=\"row-{$i}\">";
                 foreach ($row as $j => $column) {
-                    $output .= "<td class=\"column-{$j}\">{$column}</td>";
+                    if ($i==0) {
+                        $output .= "<th>{$column}</th>";
+                    } else {
+                        $output .= "<td class=\"column-{$j}\">{$column}</td>";
+                    }
                 }
                 $output .= "</tr>";
             }
+            $columns = [];
+            foreach ($this->scheduler_grid as $i => $row) {
+                if ($i>1){
+                    foreach ($row as $j => $column) {
+                        if ($j>3 && $this->SchedulerGenerator->isMarker($column)) {
+                            $columns[$j][] = $row[0];
+                        } else {
+                            if (!isset($columns[$j])) $columns[$j] = [];
+                        }
+                    }
+                }
+            }
+            $output .= "<tr>";
+            foreach ($columns as $j=>$arr){
+                if ($j>3 && count($arr)>0) {
+                    $output .= "<td>".implode(",\n",$arr)."</td>";
+                } else {
+                    $output .= "<td></td>";
+                }
+            }
+            $output .= "</tr>";
             $output .= "</table>" . PHP_EOL;
             $output .= "<p><a href='index.php'>&larr; Return home</a>";
             if ($this->saveFile) {
