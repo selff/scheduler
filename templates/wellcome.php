@@ -26,12 +26,13 @@
                     <label>Possible pauses separated by commas</label>
                     <input type="text" class="form-control" name="breaks" value="13:00-14:00"/>
                 </div>
-                <div class="input-group form-group">
-                    <span class="input-group-addon">
-                        <input type="checkbox" name="fileSave" value="1"/>
-                    </span>
-                    <label class="form-control">Generate file for download with result</label>
-                </div><!-- /input-group -->
+                <div class="form-group">
+                    <label for="sepa">Csv file separator</label>
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon3">CSV file separator</span>
+                        <input type="text" name="separator" class="form-control" id="sepa" aria-describedby="basic-addon3" value=",">
+                    </div>
+                </div>
                 <div class="form-group">
                     <input type="submit" name="submit" value="Submit" class="btn btn-primary"/>
                 </div>

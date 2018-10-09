@@ -333,7 +333,7 @@ class SchedulerGenerator implements ISchedulerGenerator
         return $data;
     }
 
-    public function saveCSV($fileName)
+    public function saveCSV($fileName,$separator)
     {
 
         $fp = fopen($fileName, 'w');
@@ -341,12 +341,12 @@ class SchedulerGenerator implements ISchedulerGenerator
         foreach ($this->columns as $c) {
             $output[] = $c['name'];
         }
-        fputcsv($fp, $output);
+        fputcsv($fp, $output, $separator);
         $output = ['persons:','','',''];
         foreach ($this->columns as $c) {
             $output[] = $c['persons'];
         }
-        fputcsv($fp, $output);
+        fputcsv($fp, $output, $separator);
         foreach ($this->rows as $compKey => $row) {
             $output = [$row['name'],$row['type'],$row['priority'],$row['face']];
             foreach ($row['intersection'] as $columnKey => $column) {
@@ -360,7 +360,7 @@ class SchedulerGenerator implements ISchedulerGenerator
                 }
                 $output[] = $time;
             }
-            fputcsv($fp, $output);
+            fputcsv($fp, $output, $separator);
         }
         fclose($fp);
     }

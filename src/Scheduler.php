@@ -111,6 +111,12 @@ class Scheduler
             $options = $this->validatePost($_POST);
             $this->initSettings($options);
 
+            if (preg_match('~^[,;]{1}$~u', $_POST['separator'])) {
+                $separator = $_POST['separator'];
+            } else {
+                $separator = ",";
+            }
+
             //file upload
             $tmp_name = $_FILES["userfile"]["tmp_name"];
             $fileName = basename($_FILES["userfile"]["name"]);
@@ -121,7 +127,7 @@ class Scheduler
                 $fileName = $this->getExamplePath();
             }
 
-            $csv = $this->loadCsv($fileName);
+            $csv = $this->loadCsv($fileName,$separator);
 
             if (empty($csv)) {
                 throw new SchedulerException('Input file is empty :(');
@@ -134,10 +140,9 @@ class Scheduler
 
         $this->scheduler_grid = $this->SchedulerGenerator->generateSchedule($csv);
 
-        if (isset($_POST['fileSave'])) {
-            $this->saveFile = $this->outDir . DIRECTORY_SEPARATOR . uniqid('scheduler-' . date("YmdHis") . '-') . '.csv';
-            $this->SchedulerGenerator->saveCSV($this->saveFile);
-        }
+        $this->saveFile = $this->outDir . DIRECTORY_SEPARATOR . 'scheduler' . '.csv';
+        $this->SchedulerGenerator->saveCSV($this->saveFile,$separator);
+
     }
 
     public function getExamplePath()
@@ -145,12 +150,12 @@ class Scheduler
         return $this->iniDir . '/' . $this->example_dummy_grid;
     }
 
-    public function loadCsv($fileName)
+    public function loadCsv($fileName,$separator=",")
     {
         $csv = [];
         if (($handle = fopen($fileName, "r")) !== FALSE) {
             do {
-                $result = fgetcsv($handle);
+                $result = fgetcsv($handle,0, $separator);
                 $csv[] = $result;
             } while ($result);
             fclose($handle);
@@ -182,7 +187,7 @@ class Scheduler
             $output .= "</table>" . PHP_EOL;
             $output .= "<p><a href='index.php'>&larr; Return home</a>";
             if ($this->saveFile) {
-                 $output .= "| <a class=\"text-danger\" href='" . $this->saveFile . "'>Download result &#9660;</a>";
+                 $output .= " | <a class=\"text-danger\" href='" . $this->saveFile . "'>Download result &#9660;</a>";
             }
             $output .= "</p>" . PHP_EOL;
             $output .= "</div>";
