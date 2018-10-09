@@ -345,7 +345,7 @@ class SchedulerGenerator implements ISchedulerGenerator
 
     public function saveCSV($fileName,$separator)
     {
-
+        $columns = [];
         $fp = fopen($fileName, 'w');
         $output = ['Company','Type','Priority','Face'];
         foreach ($this->columns as $c) {
@@ -355,6 +355,7 @@ class SchedulerGenerator implements ISchedulerGenerator
         $output = ['persons:','','',''];
         foreach ($this->columns as $c) {
             $output[] = $c['persons'];
+            $columns[] = '';
         }
         fputcsv($fp, $output, $separator);
         foreach ($this->rows as $compKey => $row) {
@@ -368,10 +369,18 @@ class SchedulerGenerator implements ISchedulerGenerator
                         }
                     }
                 }
+                if (!$time && $this->isMarker($column)) {
+                    $columns[$columnKey+4] = $row['name'];
+                } else {
+                    if (!isset($columns[$columnKey+4])) $columns[$columnKey+4] = '';
+                }
                 $output[] = $time;
             }
             fputcsv($fp, $output, $separator);
         }
+
+        fputcsv($fp, $columns, $separator);
+
         fclose($fp);
     }
 }
