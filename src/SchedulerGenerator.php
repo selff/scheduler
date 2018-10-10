@@ -355,7 +355,7 @@ class SchedulerGenerator implements ISchedulerGenerator
         $output = ['persons:','','',''];
         foreach ($this->columns as $c) {
             $output[] = $c['persons'];
-            $columns[] = '';
+            //$columns[] = '';
         }
         fputcsv($fp, $output, $separator);
         foreach ($this->rows as $compKey => $row) {
@@ -369,18 +369,21 @@ class SchedulerGenerator implements ISchedulerGenerator
                         }
                     }
                 }
+                if (!isset($columns[$columnKey])) {
+                    $columns[$columnKey] = [];
+                }
                 if (!$time && $this->isMarker($column)) {
-                    $columns[$columnKey+4] = $row['name'];
-                } else {
-                    if (!isset($columns[$columnKey+4])) $columns[$columnKey+4] = '';
+                    $columns[$columnKey][] = $row['name'];
                 }
                 $output[] = $time;
             }
             fputcsv($fp, $output, $separator);
         }
-
-        fputcsv($fp, $columns, $separator);
-
+        $output=['','','',''];
+        foreach($columns as $column) {
+            $output[] = implode(", ",$column);
+        }
+        fputcsv($fp, $output, $separator);
         fclose($fp);
     }
 }
