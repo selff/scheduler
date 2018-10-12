@@ -44,6 +44,9 @@ table.table>tbody>tr.row-0 td {
 table.table>tbody>tr.row-1 td {
     background-color: #eee;
 }
+table.table>tbody>tr.row-2 td {
+    background-color: #f4f4f4;
+}
 table.table>tbody>tr>td.column-0 {
     background-color: #f4f4f4;
 }

@@ -1,9 +1,10 @@
 Company,Type,Priority,Face,Metro,IKEA,3M,Cisco
+type:,,,,Mall,Mall,Tech,Tech
 persons:,,,,2,2,1,1
 Royal & SPA,Hotel,1,Катя,X,X,,
 Royal & SPA,Hotel,0,Piter,,,X,X
 Azimuth,Hotel,1,Oleg,X,12:30,X,X
 Галя Гуляй,Restourant,0,Mishut,X,12:00,,
 Red Square,Mall,0,Boris,X,X,X,X
-Kempinskiy,Hotel,0,Tim,X,X,X,X
-Radison,Hotel,0,Olga,X,X,X,X
+Kempinskiy,Hotel,0,,X,X,X,X
+Radison,Hotel,0,,X,X,X,X

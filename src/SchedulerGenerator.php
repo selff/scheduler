@@ -96,13 +96,16 @@ class SchedulerGenerator implements ISchedulerGenerator
         foreach ($rows as $i => $row) {
             // по столбцам
             foreach ($row as $k => $v) {
-                // первая строка содержит названия компаний
+                // 1 строка содержит названия компаний
                 if (0 == $i) {
                     if ($k > 3) $this->columns[($k - 4)]['name'] = $v;
-                    // вторая строка содержит кол-во персонала компаний
+                    // 2 строка содержит кол-во персонала компаний
                 } elseif (1 == $i) {
+                    if ($k > 3) $this->columns[($k - 4)]['type'] = $v;
+                    // 3 строка содержит кол-во персонала компаний
+                } elseif (2 == $i) {
                     if ($k > 3) $this->columns[($k - 4)]['persons'] = $v ? (int)$v : 1;
-                    // начиная с третьей строки
+                    // начиная с 4 строки
                 } else {
                     switch ($k) {
                         case 0:
@@ -309,6 +312,13 @@ class SchedulerGenerator implements ISchedulerGenerator
             $row[] = $c['name'];
         }
         $data[] = $row;
+
+        $row = array('type:', '', '', '');
+        foreach ($this->columns as $c) {
+            $row[] = $c['type'];
+        }
+        $data[] = $row;
+
         $row = array('persons:', '', '', '');
         foreach ($this->columns as $c) {
             $row[] = $c['persons'];
@@ -352,10 +362,16 @@ class SchedulerGenerator implements ISchedulerGenerator
             $output[] = $c['name'];
         }
         fputcsv($fp, $output, $separator);
+
+        $output = ['type:','','',''];
+        foreach ($this->columns as $c) {
+            $output[] = $c['type'];
+        }
+        fputcsv($fp, $output, $separator);
+
         $output = ['persons:','','',''];
         foreach ($this->columns as $c) {
             $output[] = $c['persons'];
-            //$columns[] = '';
         }
         fputcsv($fp, $output, $separator);
         foreach ($this->rows as $compKey => $row) {

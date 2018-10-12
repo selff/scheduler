@@ -190,7 +190,7 @@ class Scheduler
             }
             $columns = [];
             foreach ($this->scheduler_grid as $i => $row) {
-                if ($i>1){
+                if ($i>2){
                     foreach ($row as $j => $column) {
                         if ($j>3 && $this->SchedulerGenerator->isMarker($column)) {
                             $columns[$j][] = $row[0];
