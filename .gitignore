@@ -1,5 +1,6 @@
 vendor
 build
+config.php
 composer.lock
 csv/scheduler*
 .idea/

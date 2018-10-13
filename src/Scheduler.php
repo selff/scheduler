@@ -26,20 +26,32 @@ class Scheduler
 
     protected $SchedulerGenerator = null;
 
-    protected $uploadDir = '/tmp';
-
-    protected $saveFile = '';
-
-    protected $iniDir = './csv';
-    protected $outDir = './csv';
-
-    protected $example_dummy_grid = 'example2.csv';
+    protected $uploadDir;
+    protected $saveFile;
+    protected $iniDir;
+    protected $outDir;
+    protected $example_dummy_grid;
 
     protected $scheduler_grid = array();
 
     public function __construct(ISchedulerGenerator $SchedulerGenerator)
     {
         $this->SchedulerGenerator = $SchedulerGenerator;
+        $this->init();
+    }
+
+    protected function init()
+    {
+        if (!file_exists(__DIR__.'/../config.php')) {
+            throw new SchedulerException('File not found: '.__DIR__.'/config.php');
+        } else {
+            $config = require (__DIR__.'/../config.php');
+            foreach ($config['parameters'] as $key=>$param) {
+                if(property_exists($this, $key)) {
+                    $this->$key = $param;
+                }
+            }
+        }
     }
 
     /**
