@@ -390,6 +390,7 @@ class SchedulerGenerator implements ISchedulerGenerator
                 }
                 if (!$time && $this->isMarker($column)) {
                     $columns[$columnKey][] = $row['name'];
+                    $time = $column;
                 }
                 $output[] = $time;
             }
